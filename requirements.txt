@@ -4,3 +4,7 @@ PyPDF2
 pandas
 numpy
 htbuilder
+pytesseract
+pdf2image
+io
+json
