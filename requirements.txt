@@ -1,7 +1,6 @@
 openai
 streamlit_authenticator
 PyPDF2
-os
 pandas
 numpy
 htbuilder
