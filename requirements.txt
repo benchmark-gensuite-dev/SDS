@@ -1,6 +1,5 @@
 openai
 streamlit_authenticator
-zipfile
 PyPDF2
 os
 pandas
