@@ -259,9 +259,8 @@ def main():
             user_type = 'admin'
         else:
             user_type = 'user'
-            
 
-        # Place your main app code here
+        # main app code
         # File uploader for SDS PDFs
         st.write("Upload a ZIP file containing SDS PDF files:")
         uploaded_file = st.file_uploader("", type=["zip"])
@@ -317,11 +316,11 @@ def main():
                     else:
                         st.error("Failed to extract fields from any SDS files.")
 
-
     elif st.session_state['authentication_status'] == False:
         st.error('Username or password is incorrect')
     elif st.session_state['authentication_status'] is None:
         st.warning('Please enter your username and password')
+        
     footer()
 
 # Run the main function
