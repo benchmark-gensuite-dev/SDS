@@ -207,6 +207,9 @@ def footer():
 
 def main():
     st.set_page_config(page_title='SDS Data Extraction Tool', page_icon='bench.png', layout='wide')
+    # Initialize authentication status in session state if not set
+    if 'authentication_status' not in st.session_state:
+        st.session_state['authentication_status'] = None
 
     # Page Header with Logo
     col1, col2, col3 = st.columns([1, 6, 1])
