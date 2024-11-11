@@ -249,6 +249,7 @@ def footer():
 
 def main():
     st.set_page_config(page_title='SDS Data Extraction Tool', page_icon='bench.png', layout='wide')
+    st.sidebar.image('bench.png', width=250)
     # Initialize authentication status in session state if not set
     if 'authentication_status' not in st.session_state:
         st.session_state['authentication_status'] = None
@@ -258,7 +259,7 @@ def main():
     with col2:
         st.title("SDS Data Extraction Tool")
     with col3:
-        st.image('bench.png', width=150)
+        st.image('bench.png', width=250)
 
     # Retrieve credentials from st.secrets
     admin_username = st.secrets["auth"]["admin_username"]
