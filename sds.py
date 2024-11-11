@@ -222,41 +222,44 @@ def main():
     user_password = st.secrets["auth"]["user_password"]
 
     # User Authentication
-    names = ['Admin User', 'Regular User']
+    names = ['Admin User', 'C&I User']
     usernames = [admin_username, user_username]
     passwords = [admin_password, user_password]
 
-    hashed_passwords = stauth.Hasher(passwords).generate()
+    hashed_passwords_0 = stauth.Hasher.hash(passwords[0])
+    hashed_passwords_1 = stauth.Hasher.hash(passwords[1])
 
     credentials = {
         'usernames': {
-            usernames[0]: {
-                'name': names[0],
-                'email': 'admin@example.com',
-                'password': hashed_passwords[0]
+            admin_username: {
+                'name': 'Admin User',
+                'email': 'admin@aggreko.com',
+                'password': hashed_passwords_0
             },
-            usernames[1]: {
-                'name': names[1],
-                'email': 'user@example.com',
-                'password': hashed_passwords[1]
+            user_username: {
+                'name': 'C&I User',
+                'email': 'user@aggreko.com',
+                'password': hashed_passwords_1
             }
         }
     }
 
-    authenticator = stauth.Authenticate(credentials, 'sds_extraction_app', 'some_signature_key', cookie_expiry_days=30)
+    authenticator = stauth.Authenticate(credentials, 'some_cookie_name', 'some_signature_key', cookie_expiry_days=30)
 
-    # Login
-    name, authentication_status, username = authenticator.login('Login', 'main')
+    # Update the login call
+    authenticator.login('main')
 
-    if authentication_status:
+    # Access authentication status from st.session_state
+    if st.session_state['authentication_status']:
         authenticator.logout('Logout', 'sidebar')
-        st.sidebar.write(f"Welcome *{name}*")
+        st.sidebar.write(f"Welcome *{st.session_state['name']}*")
 
         # Determine user type
-        if username == admin_username:
+        if st.session_state['username'] == admin_username:
             user_type = 'admin'
         else:
             user_type = 'user'
+            
 
         # Place your main app code here
         # File uploader for SDS PDFs
