@@ -213,7 +213,7 @@ def main():
     with col2:
         st.title("SDS Data Extraction Tool")
     with col3:
-        st.image('logo.png', width=150)
+        st.image('bench.png', width=150)
 
     # Retrieve credentials from st.secrets
     admin_username = st.secrets["auth"]["admin_username"]
