@@ -19,7 +19,7 @@ import os  # For file path operations
 import streamlit_authenticator as stauth  # Make sure to install this package
 
 # For custom footer styling
-from htbuilder import HtmlElement, div, hr, br, p, a, img, styles
+from htbuilder import HtmlElement, div, hr, p, a, img, styles, br
 from htbuilder.units import percent, px
 
 # Set your OpenAI API key
