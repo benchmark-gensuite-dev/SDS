@@ -24,6 +24,48 @@ from htbuilder.units import percent, px
 
 # Set your OpenAI API key
 openai.api_key = st.secrets["openai_key"]
+def extract_text_from_pdf(pdf_content):
+    """
+    Extract text from a PDF document. If the PDF is image-based, perform OCR.
+
+    Parameters:
+    - pdf_content (bytes): PDF data in bytes.
+
+    Returns:
+    - str or None: Extracted text or None if extraction fails.
+    """
+    try:
+        reader = PdfReader(io.BytesIO(pdf_content))
+        text = ''
+        is_text_based = False
+
+        # Process all pages
+        num_pages = len(reader.pages)
+        pages = reader.pages[:num_pages]
+
+        # Check if PDF is text-based
+        for page in pages:
+            page_text = page.extract_text()
+            if page_text and page_text.strip():
+                is_text_based = True
+                text += page_text + '\n'
+
+        if not is_text_based:
+            # PDF is image-based; use OCR
+            st.info("PDF is image-based. Performing OCR...")
+            images = convert_from_bytes(pdf_content)
+            text = ''
+            for image in images:
+                extracted_text = pytesseract.image_to_string(image)
+                text += extracted_text + '\n'
+            print(text)
+            return text
+        else:
+            print(text)
+            return text
+    except Exception as e:
+        st.error(f"Error extracting text from PDF: {e}")
+        return None
 
 # ==========================
 # Helper Functions
