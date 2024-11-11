@@ -317,13 +317,13 @@ def main():
                     else:
                         st.error("Failed to extract fields from any SDS files.")
 
-        # Add the footer at the end of the main content
-        footer()
 
     elif authentication_status == False:
         st.error('Username or password is incorrect')
     elif authentication_status == None:
         st.warning('Please enter your username and password')
+      # Add the footer at the end of the main content
+    footer()
 
 # Run the main function
 if __name__ == "__main__":
