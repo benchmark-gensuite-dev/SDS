@@ -6,4 +6,5 @@ numpy
 htbuilder
 pytesseract
 pdf2image
+openpyxl
 
