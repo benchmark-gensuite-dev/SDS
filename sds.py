@@ -72,6 +72,7 @@ def extract_text_from_pdf(pdf_content):
 # ==========================
 
 def extract_sds_fields_with_gpt(text):
+    print(text)
     """
     Extract required fields from the text using GPT.
 
