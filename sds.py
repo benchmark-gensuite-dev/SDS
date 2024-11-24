@@ -72,7 +72,6 @@ def extract_text_from_pdf(pdf_content):
 # ==========================
 
 def extract_sds_fields_with_gpt(text):
-    print({text})
     """
     Extract required fields from the text using GPT.
 
@@ -87,8 +86,8 @@ You are an assistant that extracts key information from Safety Data Sheets (SDS)
 
 Given the following text extracted from an SDS document, extract and provide the following information in English:
 
-- Chemical Product
-- Manufacturer's Name
+- Chemical Product (think through, might be mentioned anywhere in the file, including the title name. Might be called product name, etc.)
+- Manufacturer's Name (think through, could be the logo somewhere, could be mentioned in the address, etc. think and reason)
 - Manufacturer's Country (think through, maybe it's in the address, or mentioned elsewhere.)
 - Language (identify this field by recognizing the language the SDS is in)
 - SDS Revision Date (convert it to MM-DD-YYYY format)
