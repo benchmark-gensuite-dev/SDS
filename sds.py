@@ -14,6 +14,8 @@ import json
 import zipfile
 from PyPDF2 import PdfReader
 import os  # For file path operations
+import openpyxl
+
 
 # For authentication
 import streamlit_authenticator as stauth  # Make sure to install this package
