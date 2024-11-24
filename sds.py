@@ -82,7 +82,7 @@ def extract_sds_fields_with_gpt(text):
     - dict: Extracted fields or default values if extraction fails.
     """
     prompt = f"""
-You are an assistant that extracts key information from Safety Data Sheets (SDS).
+You are an assistant that extracts key information from Safety Data Sheets (SDS). Read through the whole document before identifying the fields below. The starting pages may be blank or cover letters, keep reading.
 
 Given the following text extracted from an SDS document, extract and provide the following information in English:
 
