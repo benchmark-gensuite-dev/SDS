@@ -351,16 +351,20 @@ def main():
                         # Convert the list of dictionaries to a DataFrame for display
                         df = pd.DataFrame(all_extracted_fields)
                         st.dataframe(df)
-                        # Optionally, allow the user to download the extracted data
-                        csv = df.to_csv(index=False).encode('utf-8')
+                        # Save DataFrame to an Excel file in memory
+                        excel_file = io.BytesIO()
+                        df.to_excel(excel_file, index=False, engine='openpyxl')
+                        excel_file.seek(0)  # Move the pointer to the beginning of the stream
+                        # Create a download button for the Excel file
                         st.download_button(
-                            label="Download Extracted Data as CSV",
-                            data=csv,
-                            file_name='extracted_sds_data.csv',
-                            mime='text/csv',
+                            label="Download Extracted Data as Excel",
+                            data=excel_file,
+                            file_name='extracted_sds_data.xlsx',
+                            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                         )
                     else:
                         st.error("Failed to extract fields from any SDS files.")
+
 
     elif st.session_state['authentication_status'] == False:
         st.error('Username or password is incorrect')
