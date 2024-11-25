@@ -106,7 +106,7 @@ Given the following text extracted from an SDS document, extract and provide the
 
 Provide your findings in valid JSON format. Do not include any markdown formatting, backticks, or the word 'json'. Just return the raw JSON object.
 
-If any of the fields are not available, use an empty string ("") as the value. If the document is not an SDS, use "Not SDS" as value.
+If any of the fields are not available, use an empty string ("") as the value. If the document is not an SDS, use "Not SDS" as the value for the "Parsing Notes" field and leave all other fields empty.
 
 Text:
 \"\"\"
@@ -144,46 +144,14 @@ Text:
         except json.JSONDecodeError as json_err:
             print(f"JSON Decode Error: {json_err}")
             print(f"Raw output: {output}")
-            # Return default values if JSON parsing fails
-            return {
-                "Chemical Product": "",
-                "Manufacturer's Name": "",
-                "Manufacturer's Country": "",
-                "Language": "",
-                "SDS Revision Date": "",
-                "Product Number": "",
-                "Trade Name": "",
-                "Manufacturer Contact": "",
-                "Emergency Phone": "",
-                "Phone Number": "",
-                "Fax Number": "",
-                "Manufacturer Street": "",
-                "Manufacturer City": "",
-                "Manufacturer State": "",
-                "Manufacturer ZIP Code": ""
-            }
+            # Return empty values if JSON parsing fails
+            return {}
 
     except Exception as e:
         print(f"Extraction error: {str(e)}")
         st.error(f"Error extracting fields with GPT: {str(e)}")
-        # Return default values if any error occurs
-        return {
-            "Chemical Product": "",
-            "Manufacturer's Name": "",
-            "Manufacturer's Country": "",
-            "Language": "",
-            "SDS Revision Date": "",
-            "Product Number": "",
-            "Trade Name": "",
-            "Manufacturer Contact": "",
-            "Emergency Phone": "",
-            "Phone Number": "",
-            "Fax Number": "",
-            "Manufacturer Street": "",
-            "Manufacturer City": "",
-            "Manufacturer State": "",
-            "Manufacturer ZIP Code": ""
-        }
+        # Return empty values if any error occurs
+        return {}
 
 # ==========================
 # Footer Functions
@@ -341,14 +309,22 @@ def main():
                             if text:
                                 # Use GPT to extract the required fields
                                 extracted_fields = extract_sds_fields_with_gpt(text)
+                                # Initialize Parsing Notes
+                                parsing_notes = ""
+                                # Check if the document is not an SDS
+                                if "Not SDS" in extracted_fields.values():
+                                    # Set all fields to empty except 'Parsing Notes'
+                                    extracted_fields = {key: "" for key in extracted_fields.keys()}
+                                    parsing_notes = "Not an SDS"
+                                else:
+                                    # Identify missing fields
+                                    missing_fields = [field for field, value in extracted_fields.items() if value == ""]
+                                    if missing_fields:
+                                        parsing_notes = "Missing: " + ', '.join(missing_fields)
                                 # Add the PDF file name to the extracted fields
                                 extracted_fields['Scanned SDS Document File Name'] = os.path.basename(pdf_file)
-
-                                # Identify missing fields
-                                missing_fields = [field for field, value in extracted_fields.items() if value == ""]
-                                # Add missing fields to the extracted_fields dictionary
-                                extracted_fields['Missing Fields'] = ', '.join(missing_fields)
-
+                                # Add Parsing Notes to the extracted fields
+                                extracted_fields['Parsing Notes'] = parsing_notes
                                 all_extracted_fields.append(extracted_fields)
                             else:
                                 st.error(f"Failed to extract text from {os.path.basename(pdf_file)}.")
@@ -358,6 +334,11 @@ def main():
                         st.write("Extracted fields from all SDS files:")
                         # Convert the list of dictionaries to a DataFrame for display
                         df = pd.DataFrame(all_extracted_fields)
+                        # Reorder columns: Move 'Scanned SDS Document File Name' to the first column
+                        cols = df.columns.tolist()
+                        cols.insert(0, cols.pop(cols.index('Scanned SDS Document File Name')))
+                        df = df[cols]
+                        # Display the DataFrame
                         st.dataframe(df)
                         # Save DataFrame to an Excel file in memory
                         excel_file = io.BytesIO()
