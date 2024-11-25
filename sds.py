@@ -119,11 +119,11 @@ Text:
             raise ValueError("Input text is empty")
 
         response = openai.chat.completions.create(
-            model="gpt-4o",  # Using model 'gpt-4o' as per your instruction
+            model="gpt-4o",  
             messages=[
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=500,
+            max_tokens=1500,
             temperature=0,
         )
 
