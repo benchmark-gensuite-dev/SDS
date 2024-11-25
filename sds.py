@@ -16,7 +16,6 @@ from PyPDF2 import PdfReader
 import os  # For file path operations
 import openpyxl
 
-
 # For authentication
 import streamlit_authenticator as stauth  # Make sure to install this package
 
@@ -26,6 +25,7 @@ from htbuilder.units import percent, px
 
 # Set your OpenAI API key
 openai.api_key = st.secrets["openai_key"]
+
 def extract_text_from_pdf(pdf_content):
     """
     Extract text from a PDF document. If the PDF is image-based, perform OCR.
@@ -106,7 +106,7 @@ Given the following text extracted from an SDS document, extract and provide the
 
 Provide your findings in valid JSON format. Do not include any markdown formatting, backticks, or the word 'json'. Just return the raw JSON object.
 
-If any of the fields are not available, use "Not Available" as the value. If the document is not an SDS, use "Not SDS" as value.
+If any of the fields are not available, use an empty string ("") as the value. If the document is not an SDS, use "Not SDS" as value.
 
 Text:
 \"\"\"
@@ -146,21 +146,21 @@ Text:
             print(f"Raw output: {output}")
             # Return default values if JSON parsing fails
             return {
-                "Chemical Product": "Not Available",
-                "Manufacturer's Name": "Not Available",
-                "Manufacturer's Country": "Not Available",
-                "Language": "Not Available",
-                "SDS Revision Date": "Not Available",
-                "Product Number": "Not Available",
-                "Trade Name": "Not Available",
-                "Manufacturer Contact": "Not Available",
-                "Emergency Phone": "Not Available",
-                "Phone Number": "Not Available",
-                "Fax Number": "Not Available",
-                "Manufacturer Street": "Not Available",
-                "Manufacturer City": "Not Available",
-                "Manufacturer State": "Not Available",
-                "Manufacturer ZIP Code": "Not Available"
+                "Chemical Product": "",
+                "Manufacturer's Name": "",
+                "Manufacturer's Country": "",
+                "Language": "",
+                "SDS Revision Date": "",
+                "Product Number": "",
+                "Trade Name": "",
+                "Manufacturer Contact": "",
+                "Emergency Phone": "",
+                "Phone Number": "",
+                "Fax Number": "",
+                "Manufacturer Street": "",
+                "Manufacturer City": "",
+                "Manufacturer State": "",
+                "Manufacturer ZIP Code": ""
             }
 
     except Exception as e:
@@ -168,21 +168,21 @@ Text:
         st.error(f"Error extracting fields with GPT: {str(e)}")
         # Return default values if any error occurs
         return {
-            "Chemical Product": "Not Available",
-            "Manufacturer's Name": "Not Available",
-            "Manufacturer's Country": "Not Available",
-            "Language": "Not Available",
-            "SDS Revision Date": "Not Available",
-            "Product Number": "Not Available",
-            "Trade Name": "Not Available",
-            "Manufacturer Contact": "Not Available",
-            "Emergency Phone": "Not Available",
-            "Phone Number": "Not Available",
-            "Fax Number": "Not Available",
-            "Manufacturer Street": "Not Available",
-            "Manufacturer City": "Not Available",
-            "Manufacturer State": "Not Available",
-            "Manufacturer ZIP Code": "Not Available"
+            "Chemical Product": "",
+            "Manufacturer's Name": "",
+            "Manufacturer's Country": "",
+            "Language": "",
+            "SDS Revision Date": "",
+            "Product Number": "",
+            "Trade Name": "",
+            "Manufacturer Contact": "",
+            "Emergency Phone": "",
+            "Phone Number": "",
+            "Fax Number": "",
+            "Manufacturer Street": "",
+            "Manufacturer City": "",
+            "Manufacturer State": "",
+            "Manufacturer ZIP Code": ""
         }
 
 # ==========================
@@ -308,7 +308,7 @@ def main():
         else:
             user_type = 'user'
 
-        # main app code
+        # Main app code
         # File uploader for SDS PDFs
         st.write("Upload a ZIP file containing SDS PDF files:")
         uploaded_file = st.file_uploader("", type=["zip"])
@@ -343,6 +343,12 @@ def main():
                                 extracted_fields = extract_sds_fields_with_gpt(text)
                                 # Add the PDF file name to the extracted fields
                                 extracted_fields['Scanned SDS Document File Name'] = os.path.basename(pdf_file)
+
+                                # Identify missing fields
+                                missing_fields = [field for field, value in extracted_fields.items() if value == ""]
+                                # Add missing fields to the extracted_fields dictionary
+                                extracted_fields['Missing Fields'] = ', '.join(missing_fields)
+
                                 all_extracted_fields.append(extracted_fields)
                             else:
                                 st.error(f"Failed to extract text from {os.path.basename(pdf_file)}.")
@@ -366,7 +372,6 @@ def main():
                         )
                     else:
                         st.error("Failed to extract fields from any SDS files.")
-
 
     elif st.session_state['authentication_status'] == False:
         st.error('Username or password is incorrect')
